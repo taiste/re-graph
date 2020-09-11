@@ -8,7 +8,7 @@
 (re-frame/reg-event-fx
  ::mutate
  interceptors
- (fn [{:keys [db dispatchable-event instance-name]} [query-id query variables callback-event :as event]]
+ (fn [{:keys [db dispatchable-event instance-name]} [query-id operationName query variables callback-event :as event]]
    (let [query (str "mutation " (string/replace query #"^mutation\s?" ""))
          websocket-supported? (contains? (get-in db [:ws :supported-operations]) :mutate)]
      (cond
@@ -21,7 +21,8 @@
         ::internals/send-ws [(get-in db [:ws :connection])
                              {:id query-id
                               :type "start"
-                              :payload {:query query
+                              :payload {:operationName operationName
+                                        :query query
                                         :variables variables}}]}
 
        (and websocket-supported? (:ws db))
@@ -33,7 +34,8 @@
                                query-id
                                (get-in db [:http :url])
                                {:request (get-in db [:http :impl])
-                                :payload {:query query
+                                :payload {:operationName operationName
+                                          :query query
                                           :variables variables}}]}))))
 
 (defn mutate
@@ -62,7 +64,7 @@
 (re-frame/reg-event-fx
  ::query
  interceptors
- (fn [{:keys [db dispatchable-event instance-name]} [query-id query variables callback-event :as event]]
+ (fn [{:keys [db dispatchable-event instance-name]} [query-id operationName query variables callback-event :as event]]
    (let [query (str "query " (string/replace query #"^query\s?" ""))
          websocket-supported? (contains? (get-in db [:ws :supported-operations]) :query)]
      (cond
@@ -75,7 +77,8 @@
         ::internals/send-ws [(get-in db [:ws :connection])
                              {:id query-id
                               :type "start"
-                              :payload {:query query
+                              :payload {:operationName operationName
+                                        :query query
                                         :variables variables}}]}
 
        (and websocket-supported? (:ws db))
@@ -87,7 +90,8 @@
                                query-id
                                (get-in db [:http :url])
                                {:request (get-in db [:http :impl])
-                                :payload {:query query
+                                :payload {:operationName operationName
+                                          :query query
                                           :variables variables}}]}))))
 
 (defn query
@@ -132,7 +136,7 @@
 (re-frame/reg-event-fx
  ::subscribe
  interceptors
- (fn [{:keys [db instance-name dispatchable-event] :as cofx} [subscription-id query variables callback-event :as event]]
+ (fn [{:keys [db instance-name dispatchable-event] :as cofx} [subscription-id operationName query variables callback-event :as event]]
    (cond
      (get-in db [:subscriptions (name subscription-id) :active?])
      {} ;; duplicate subscription
@@ -144,7 +148,8 @@
       ::internals/send-ws [(get-in db [:ws :connection])
                            {:id (name subscription-id)
                             :type "start"
-                            :payload {:query (str "subscription " (string/replace query #"^subscription\s?" ""))
+                            :payload {:operationName operationName
+                                      :query (str "subscription " (string/replace query #"^subscription\s?" ""))
                                       :variables variables}}]}
 
      (:ws db)

@@ -33,7 +33,7 @@
 
 (defn- ensure-query-id [event-name trimmed-event]
   (if (contains? #{:re-graph.core/query :re-graph.core/mutate} event-name)
-    (if (= 3 (count trimmed-event)) ;; query, variables, callback-event
+    (if (= 4 (count trimmed-event)) ;; operationName, query, variables, callback-event
       (vec (cons (generate-query-id) trimmed-event))
       trimmed-event)
     trimmed-event))
