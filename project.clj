@@ -1,4 +1,4 @@
-(defproject re-graph "0.1.15-SNAPSHOT"
+(defproject re-graph "0.1.16-SNAPSHOT"
   :description "GraphQL client for re-frame applications"
   :url "https://github.com/oliyh/re-graph"
   :license {:name "Eclipse Public License"
@@ -10,13 +10,12 @@
                   ["vcs" "commit"]
                   ["vcs" "tag"]
                   ["install"]
-                  ["deploy" "clojars"]
-                  ["modules" "deploy" "clojars"]
+                  ["deploy"]
                   ["change" "version" "leiningen.release/bump-version"]
                   ["modules" "change" "version" "leiningen.release/bump-version"]
                   ["vcs" "commit"]
                   ["vcs" "push"]]
-  :dependencies [[re-frame "0.10.6"]
+  :dependencies [[re-frame "1.1.2"]
                  [cljs-http "0.1.45"]
                  [org.clojure/tools.logging "0.4.1"]
                  [cheshire "5.8.1"]

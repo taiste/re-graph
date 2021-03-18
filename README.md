@@ -70,6 +70,9 @@ Call the `init` function to bootstrap it and then use `subscribe`, `unsubscribe`
 (re-graph/query "{ things { id } }"  ;; your graphql query
                  {:some "variable"}  ;; arguments map
                  on-thing)           ;; callback event when response is recieved
+
+;; shut re-graph down when finished
+(re-graph/destroy)
 ```
 
 ### re-frame users
@@ -100,9 +103,13 @@ Dispatch the `init` event to bootstrap it and then use the `:subscribe`, `:unsub
 
 ;; perform a query, with the response sent to the callback event provided
 (re-frame/dispatch [::re-graph/query
+                    :my-query-id         ;; unique id for this query
                     "{ things { id } }"  ;; your graphql query
                     {:some "variable"}   ;; arguments map
                     [::on-thing]])       ;; callback event when response is recieved
+
+;; shut re-graph down when finished
+(re-frame/dispatch [::re-graph/destroy])
 ```
 
 ### Options
@@ -224,6 +231,7 @@ The `connection-init-payload` will be sent again and all future remote calls wil
 `cider-jack-in-clj&cljs`
 
 CLJS tests are available at http://localhost:9500/figwheel-extra-main/auto-testing
+You will need to run `(re-graph.integration-server/start!)` for the integration tests to pass.
 
 [![CircleCI](https://circleci.com/gh/oliyh/re-graph.svg?style=svg)](https://circleci.com/gh/oliyh/re-graph)
 
